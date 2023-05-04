@@ -14,5 +14,16 @@ find.peaks <- function(data, parameter, minimum_peaks)
   }
   index_vector = as.vector(index_list, mode = 'numeric')
   data_vector = as.vector(data_list, mode = 'numeric')
-  return(data_vector)
+  data_max = max(data_vector)
+  peaks = findpeaks(data_vector, minpeakheight = data_max/10)
+  for (minheight in seq(from = data_max, to =  data_max/10, by = -data_max/10))
+  {
+    test_peaks = findpeaks(data_vector, minpeakheight = minheight)
+    if(length(test_peaks[,1]) >= minimum_peaks)
+    {
+      peaks = test_peaks
+      break
+    }
+  }
+  return(peaks)
 }
