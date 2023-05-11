@@ -2,6 +2,7 @@ library(ggplot2)
 library(scales)
 library(plotly)
 library(pracma)
+library(modules)
 
 setwd('C:/Users/jconnor/Bay Area Air Quality Management District/Charity Garland - AMSP_shared/Projects/_Mobile Monitoring/Mobile Data/Richmond_North_RIchmond_San_Pablo Study Data/20211206/_QC_Data')
 data = read.csv('2021-12-06_RSP_NorthRichmond_V1_3_PTR_corrected.csv')
@@ -14,3 +15,7 @@ p = ggplot(data) + ggtitle("Test") +
 
 p <- ggplotly(p)
 p
+
+module_dir = 'C:/Users/jconnor/OneDrive - Bay Area Air Quality Management District/R/TS_aligment_checker'
+setwd(module_dir)
+m = use('ts_alignment_functions.R')
