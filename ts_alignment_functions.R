@@ -2,6 +2,7 @@ import('pracma')
 import('ggplot2')
 import('plotly')
 import('scales')
+import('rlang')
 
 find.peaks <- function(data, parameter, minimum_peaks)
 {
@@ -28,14 +29,16 @@ find.peaks <- function(data, parameter, minimum_peaks)
       break
     }
   }
-  return(peaks)
+  peak_heights = as.vector(peaks[,1], mode = 'numeric')
+  peak_indices = as.vector(index_list[peaks[,2]], mode = 'numeric')
+  return(cbind(peak_heights, peak_indices))
 }
 
-plot <- function(data, ...)
+plot <- function(data, parameter)
 {
   p = ggplot(data) + ggtitle("Test") +
     labs(y="ylabel") + labs(x="Time PST") +
-    geom_line(aes(...)) +
+    geom_line(aes(date, !! sym(parameter), colour = parameter)) +
     scale_x_datetime(date_breaks = "30 mins", labels = date_format("%H:%M", tz = "Etc/GMT+8"))
   p <- ggplotly(p)
   return(p)
