@@ -4,7 +4,7 @@ import('plotly')
 import('scales')
 import('rlang')
 import('splus2R')
-import('rotations')
+import('utils')
 
 generate.data.vector.df <- function(data, parameter)
 {
@@ -145,8 +145,8 @@ find.peaks.3 <- function(data, parameter, search_peak_n, return_peak_n)
     }
   ordered_matrix = peak_matrix[order(peak_matrix[,2]),]
   filtered_matrix = tail(ordered_matrix, n = return_peak_n)
-  #sorted_matrix = filtered_matrix[order(filtered_matrix[,1]),]
-  return(filtered_matrix)
+  sorted_matrix = filtered_matrix[order(filtered_matrix[,1]),]
+  return(sorted_matrix)
 }
 
 plot <- function(data, parameter)
