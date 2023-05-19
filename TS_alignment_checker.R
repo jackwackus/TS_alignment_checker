@@ -16,6 +16,6 @@ p = ggplot(data) + ggtitle("Test") +
 p <- ggplotly(p)
 p
 
-module_dir = 'C:/Users/jconnor/OneDrive - Bay Area Air Quality Management District/R/TS_aligment_checker'
+module_dir = 'C:/Users/jconnor/OneDrive - Bay Area Air Quality Management District/R/TS_alignment_checker'
 setwd(module_dir)
 m = use('ts_alignment_functions.R')
