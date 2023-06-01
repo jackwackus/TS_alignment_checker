@@ -62,6 +62,21 @@ find.peaks <- function(data, parameter, search_peak_n, return_peak_n)
 	return(sorted_matrix)
 }
 
+proximity_checker <- function(value, check_array, threshold)
+{
+	check_bool = FALSE
+	for (check_value in check_array)
+	{
+		if (abs(value - check_value) <= threshold)
+		{
+			check_bool = TRUE
+			break
+		}
+	}
+	return(check_bool)
+
+}
+
 find.common.peaks <- function(data, parameters, search_peak_n, return_peak_n)
 {
 	matrix_list = list()
@@ -70,7 +85,15 @@ find.common.peaks <- function(data, parameters, search_peak_n, return_peak_n)
 		peak_matrix = find.peaks(data, parameters[i], search_peak_n, return_peak_n) 
 		matrix_list = append(matrix_list, list(peak_matrix))
 	}
-	return(matrix_list)
+	shared_peaks = c()
+	for (i in 1:length(matrix_list))
+	{
+		peak_indices = matrix_list[[i]][,1]
+		for (i in 1:length(peak_indices))
+		{
+
+		}
+	}
 }
 
 plot <- function(data, parameter)
