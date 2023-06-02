@@ -62,7 +62,7 @@ find.peaks <- function(data, parameter, search_peak_n, return_peak_n)
 	return(sorted_matrix)
 }
 
-proximity_checker <- function(value, check_array, threshold)
+proximity.checker <- function(value, check_array, threshold)
 {
 	check_bool = FALSE
 	for (check_value in check_array)
@@ -74,7 +74,6 @@ proximity_checker <- function(value, check_array, threshold)
 		}
 	}
 	return(check_bool)
-
 }
 
 find.common.peaks <- function(data, parameters, search_peak_n, return_peak_n)
@@ -86,14 +85,49 @@ find.common.peaks <- function(data, parameters, search_peak_n, return_peak_n)
 		matrix_list = append(matrix_list, list(peak_matrix))
 	}
 	shared_peaks = c()
+	peak_occurrence_table = list()
+	for (element in parameters)
+	{
+		peak_occurrence_table = append(peak_occurrence_table, list(c()))
+	}
 	for (i in 1:length(matrix_list))
 	{
 		peak_indices = matrix_list[[i]][,1]
-		for (i in 1:length(peak_indices))
+		for (peak_index in peak_indices)
 		{
+			peak_occurrence_vector = c()
+			if (!proximity.checker(peak_index, shared_peaks, 10))
+			{
+				for (element in matrix_list)
+				{
+					peak_compare_array = element[,1]
+					if (proximity.checker(peak_index, peak_compare_array, 10))
+					{
+						peak_occurrence_vector = append(peak_occurrence_vector, c(1))
+					}
+					else
+					{
+						peak_occurrence_vector = append(peak_occurrence_vector, c(0))
+					}
+				}	
+				#print(peak_occurrence_vector)
+				if (sum(peak_occurrence_vector) >= 3)
+				{
+					shared_peaks = append(shared_peaks, c(peak_index))
+					for (k in 1:length(peak_occurrence_vector))
+					{
+						peak_occurrence_table[[k]] = append(peak_occurrence_table[[k]], c(peak_occurrence_vector[k]))
+					}
+
+				}
+			}
+
 
 		}
 	}
+	peak_occurrence_df = as.data.frame(peak_occurrence_table, col.names = parameters)
+	shared_peaks_df = as.data.frame(list(shared_peaks), col.names = c('Peak Index'))
+	return(cbind(shared_peaks_df, peak_occurrence_df))
 }
 
 plot <- function(data, parameter)
