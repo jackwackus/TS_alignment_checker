@@ -133,9 +133,19 @@ find.common.peaks <- function(data, parameters, search_peak_n, return_peak_n)
 plot <- function(data, parameter)
 {
 	p = ggplot(data) + ggtitle("Test") +
-		labs(y="ylabel") + labs(x="Time PST") +
-		geom_line(aes(date, !! sym(parameter), colour = parameter)) +
+		labs(y=parameter) + labs(x="Time PST") +
+		geom_line(aes(date, !! sym(parameter))) +
 		scale_x_datetime(date_breaks = "30 mins", labels = date_format("%H:%M", tz = "Etc/GMT+8"))
 	p <- ggplotly(p)
 	return(p)
+}
+
+plot.stacked.subplots <- function(data, parameters)
+{
+	plot_list = list()
+	for (i in 1:length(parameters))
+	{
+		plot_list[[i]] = plot(data, parameters[i])
+	}
+	return(plot_list)
 }
