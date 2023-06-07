@@ -140,6 +140,21 @@ plot <- function(data, parameter)
 	return(p)
 }
 
+plot.time.bounded <- function(data, parameter, start_time, end_time)
+{
+	date_string = strftime(data$date[1], "%Y-%m-%d")
+	start_ts = strptime(paste(date_string, start_time), "%Y-%m-%d %H:%M:%S")
+	end_ts = strptime(paste(date_string, end_time), "%Y-%m-%d %H:%M:%S")
+	data = data[data$date > start_ts,]
+	data = data[data$date < end_ts,]
+	p = ggplot(data) + ggtitle("Test") +
+		labs(y=parameter) + labs(x="Time PST") +
+		geom_line(aes(date, !! sym(parameter))) +
+		scale_x_datetime(date_breaks = "30 mins", labels = date_format("%H:%M", tz = "Etc/GMT+8"))
+	p <- ggplotly(p)
+	return(p)
+}
+
 plot.stacked.subplots <- function(data, parameters)
 {
 	plot_list = list()
@@ -147,5 +162,17 @@ plot.stacked.subplots <- function(data, parameters)
 	{
 		plot_list[[i]] = plot(data, parameters[i])
 	}
-	return(plot_list)
+	fig = subplot(plot_list, nrows = length(plot_list), titleY = TRUE)
+	return(fig)
+}
+
+plot.time.bounded.stacked.subplots <- function(data, parameters, start_time, end_time)
+{
+	plot_list = list()
+	for (i in 1:length(parameters))
+	{
+		plot_list[[i]] = plot.time.bounded(data, parameters[i], start_time, end_time)
+	}
+	fig = subplot(plot_list, nrows = length(plot_list), titleY = TRUE)
+	return(fig)
 }
