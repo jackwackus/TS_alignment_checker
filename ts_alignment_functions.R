@@ -127,7 +127,9 @@ find.common.peaks <- function(data, parameters, search_peak_n, return_peak_n)
 	}
 	peak_occurrence_df = as.data.frame(peak_occurrence_table, col.names = parameters)
 	shared_peaks_df = as.data.frame(list(shared_peaks), col.names = c('Peak Index'))
-	return(cbind(shared_peaks_df, peak_occurrence_df))
+	shared_peak_times_df = as.data.frame(list(data$date[shared_peaks]), col.names= c('DateTime'))
+	results = cbind(shared_peaks_df, shared_peak_times_df, peak_occurrence_df)
+	return(results[order(results[,1]),])
 }
 
 plot <- function(data, parameter)
