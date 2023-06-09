@@ -26,6 +26,10 @@ find.peaks <- function(data, parameter, search_peak_n, return_peak_n)
 	peaks = peaks(data_vector, span = span, strict = FALSE, endbehavior = 1) 
 	peak_indices = c()
 	peak_vals = c()
+	if (length(peaks) == 0)
+	{
+		message(paste(parameter, "contains no data, causing Error below."))
+	}
 	for (i in 1:length(peaks))
 	{
 		if(peaks[i] == TRUE)
