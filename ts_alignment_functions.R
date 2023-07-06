@@ -39,7 +39,29 @@ find.peaks <- function(data, parameter, search_peak_n, return_peak_n)
 		}
 	}
 	peak_matrix = cbind(peak_indices, peak_vals)
-	peak_matrix = peak_matrix[!duplicated(peak_matrix[,2]),]
+	#peak_matrix[,x] throws an error if peak_matrix only contains one row.
+	#dim(peak_matrix) is null if there is only one row.
+	#Check if dim(matrix) is null before running any peak_matrix[,x] operations.	
+	if(!is.null(dim(peak_matrix))){peak_matrix = peak_matrix[!duplicated(peak_matrix[,2]),]}
+	while(is.null(dim(peak_matrix)))
+	{
+		span_ratio = span_ratio + 1
+		span = as.integer(data_length/span_ratio)
+		if(span%%2 == 0){span = span + 1}
+		peaks = peaks(data_vector, span = span, strict = FALSE, endbehavior = 1)
+		peak_indices = c()
+		peak_vals = c()
+		for (i in 1:length(peaks))
+		{
+			if(peaks[i] == TRUE)
+			{
+				peak_indices = append(peak_indices, c(index_vector[i]))
+				peak_vals = append(peak_vals, c(data_vector[i]))
+			}
+		}
+		peak_matrix = cbind(peak_indices, peak_vals)
+		peak_matrix = peak_matrix[!duplicated(peak_matrix[,2]),]
+	}
 	while(length(peak_matrix[,1]) < search_peak_n)
 	{
 		span_ratio = span_ratio + 1
