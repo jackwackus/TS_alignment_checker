@@ -7,6 +7,7 @@ import('utils')
 
 find.peaks <- function(data, parameter, search_peak_n, return_peak_n)
 {
+	message("Finding ", parameter, " peaks.")
 	data_list = list()
 	index_list = list()
 	for (i in 1:nrow(data))
@@ -109,6 +110,7 @@ find.common.peaks <- function(data, parameters, search_peak_n, return_peak_n)
 		peak_matrix = find.peaks(data, parameters[i], search_peak_n, return_peak_n) 
 		matrix_list = append(matrix_list, list(peak_matrix))
 	}
+	message('Finding common peaks.')
 	shared_peaks = c()
 	peak_occurrence_table = list()
 	for (element in parameters)
