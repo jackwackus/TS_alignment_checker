@@ -7,7 +7,18 @@ import('utils')
 
 find.peaks <- function(data, parameter, search_peak_n, return_peak_n)
 {
+	"
+	Find a specified number of peaks in a data series.
+	This method searches for a greater number of peaks than it returns  
+	Args:
+		data (dataframe): dataset
+		parameter (string): column name to look for peaks in
+		search_peak_n (int): total number of peaks to search for
+		return_peak_n (int) number of peaks to include in the final matrix
+	"
 	message("Finding ", parameter, " peaks.")
+
+	# Transfer all data that is not NA into a list. Also list the indices of the non-NA data values.
 	data_list = list()
 	index_list = list()
 	for (i in 1:nrow(data))
@@ -18,13 +29,41 @@ find.peaks <- function(data, parameter, search_peak_n, return_peak_n)
 			index_list = append(index_list, list(i))
 		}
 	}
+	# Force the index and data lists into vectors.
 	index_vector = as.vector(index_list, mode = 'numeric')
 	data_vector = as.vector(data_list, mode = 'numeric')
+
+	"
+	The peaks() function searches for local maxima over window lengths defined by the span argument.
+	For a value to be selected as a local maximum, it must be greater than all other values within a
+	window of width span centered at the value.	
+
+	The number of peaks yielded by the peaks() function depends on the span value passed.
+	The larger the span value, the fewer peaks will be found, as only peak is detected per width span. 
+
+	The routines below use the peaks() function to identify a user specified number of peaks (search_peak_n)
+	by starting with a large span value (data_length/2) and decreasing the span value until the peaks() function
+	yields the specified number of peaks.
+
+	The span is set equal to data_length/span_ratio.The span_ratio begins at 2 and is increased by 1 at each iteration. 
+	"	
 	data_length = length(data_vector)
 	span_ratio = 2
 	span = as.integer(data_length/span_ratio)
+	# Make span odd. peaks() throws a warning when span is even.
 	if(span%%2 == 0){span = span + 1}
+
+	# Run peaks function.
+		# strict = TRUE (default), an element must be "strictly greater than
+		# all other values in its window to be considered a peak."
+		# strict = FALSE allows repeated values to be counted as maxima.
+		# endbehavior = 0 (default) ignores maximima "within a halfwidth of the ends of the sequence."
+		# endbehavior = 1 counts maxima "within a halfwidth of the start or end" of the sequence.	
+
+	# peaks() returns a vector of logical values, with TRUE where peaks occur.
 	peaks = peaks(data_vector, span = span, strict = FALSE, endbehavior = 1) 
+
+	# Use the peaks output to generate a vector of the indices where the peaks occur, and a vector of the associated peak maxima.
 	peak_indices = c()
 	peak_vals = c()
 	if (length(peaks) == 0)
@@ -40,10 +79,18 @@ find.peaks <- function(data, parameter, search_peak_n, return_peak_n)
 		}
 	}
 	peak_matrix = cbind(peak_indices, peak_vals)
-	#peak_matrix[,x] throws an error if peak_matrix only contains one row.
-	#dim(peak_matrix) is null if there is only one row.
-	#Check if dim(matrix) is null before running any peak_matrix[,x] operations.	
+
+	"
+	Sometimes the peak_matrix generated at this stage does not contain enough rows required for subsequent routines - 
+	peak_matrix[,x] throws an error if peak_matrix only contains one row.
+	Since dim(peak_matrix) is null if there is only one row, the aforementioned error will be prevented by 
+	checking if dim(peak_matrix) is null before running any peak_matrix[,x] operations.	
+	"
+	
+	# Remove duplicate rows in peak_matrix if peak_matrix contains enough rows for that operation.
 	if(!is.null(dim(peak_matrix))){peak_matrix = peak_matrix[!duplicated(peak_matrix[,2]),]}
+
+	# While dim(peak_matrix) is null, increase span ratio until enough peaks are detected such that dim(peak_matrix) is not null. 
 	while(is.null(dim(peak_matrix)))
 	{
 		span_ratio = span_ratio + 1
@@ -61,8 +108,10 @@ find.peaks <- function(data, parameter, search_peak_n, return_peak_n)
 			}
 		}
 		peak_matrix = cbind(peak_indices, peak_vals)
-		peak_matrix = peak_matrix[!duplicated(peak_matrix[,2]),]
+		if(!is.null(dim(peak_matrix))){peak_matrix = peak_matrix[!duplicated(peak_matrix[,2]),]}
 	}
+
+	# Increase the span ratio until the specified number of peaks is found.
 	while(length(peak_matrix[,1]) < search_peak_n)
 	{
 		span_ratio = span_ratio + 1
@@ -82,6 +131,9 @@ find.peaks <- function(data, parameter, search_peak_n, return_peak_n)
 		peak_matrix = cbind(peak_indices, peak_vals)
 		peak_matrix = peak_matrix[!duplicated(peak_matrix[,2]),]
 	}
+
+	# Order the peaks by peak height and only retain the top return_peak_n.
+	# Order the resulting matrix by peak index.
 	ordered_matrix = peak_matrix[order(peak_matrix[,2]),]
 	filtered_matrix = tail(ordered_matrix, n = return_peak_n)
 	sorted_matrix = filtered_matrix[order(filtered_matrix[,1]),]
@@ -172,8 +224,8 @@ plot <- function(data, parameter)
 plot.time.bounded <- function(data, parameter, start_time, end_time)
 {
 	date_string = strftime(data$date[1], "%Y-%m-%d")
-	start_ts = strptime(paste(date_string, start_time), "%Y-%m-%d %H:%M:%S")
-	end_ts = strptime(paste(date_string, end_time), "%Y-%m-%d %H:%M:%S")
+	start_ts = strptime(paste(date_string, start_time), "%Y-%m-%d %H:%M:%S", tz = "Etc/GMT+8")
+	end_ts = strptime(paste(date_string, end_time), "%Y-%m-%d %H:%M:%S", tz = "Etc/GMT+8")
 	data = data[data$date > start_ts,]
 	data = data[data$date < end_ts,]
 	p = ggplot(data) + ggtitle("Test") +
