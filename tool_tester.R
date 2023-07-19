@@ -9,7 +9,11 @@ data = read.csv('20220401/_QC_Data/2022-04-01_RSP_NorthRichmond_V1_3.csv')
 data$date <- as.POSIXct(data$datetime, format = "%Y-%m-%d %H:%M:%S", tz = "Etc/GMT+8")
 parameters = c("CO", "CO2_dry", "NOx", "Benzene", "BC", "PM10", "FMPS_TotConc")
 peaks = m$find.common.peaks(data, parameters, 30, 10)
+peaks
+start_time = "09:07:59"
+end_time = "09:08:59"
 fig = m$plot.time.bounded.stacked.subplots(data, parameters, start_time, end_time)
+fig
 
 "
 Good Example Days:
