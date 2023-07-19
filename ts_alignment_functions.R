@@ -26,11 +26,11 @@ find.peaks <- function(data, parameter, search_peak_n, return_peak_n)
 
 	Because of the the tendency of the peaks() function to miss important peaks until after finding many peaks of lesser importance,
 	the find.peaks() function employs the search_peak_n argument to obtain search_peak_n peaks from the peaks() function,
-	then find.peaks() sorts the results by peak height and select the return_peak_n heighest peaks.	
+	then find.peaks() sorts the results by peak height and selects the return_peak_n heighest peaks.	
 
 	Args:
 		data (dataframe): dataset
-		parameter (string): column name to look for peaks in
+		parameter (character): column name to look for peaks in
 		search_peak_n (integer): total number of peaks to search for
 		return_peak_n (integer) number of peaks to include in the final matrix
 	Returns:
