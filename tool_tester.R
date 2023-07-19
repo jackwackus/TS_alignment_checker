@@ -1,7 +1,3 @@
-library(ggplot2)
-library(scales)
-library(plotly)
-library(pracma)
 library(modules)
 
 module_dir = 'C:/Users/jconnor/OneDrive - Bay Area Air Quality Management District/R/TS_alignment_checker'
