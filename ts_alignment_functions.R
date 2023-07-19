@@ -82,7 +82,7 @@ find.peaks <- function(data, parameter, search_peak_n, return_peak_n)
 		When strict = TRUE (default), an element must be 'strictly greater than...
 		all other values in its window to be considered a peak.'
 		We run strict = FALSE, which allows repeated values to be counted as maxima.
-		When endbehavior = 0 (default), maximima 'within a halfwidth of the ends of the sequence' are ignored.
+		When endbehavior = 0 (default), maxima 'within a halfwidth of the ends of the sequence' are ignored.
 		We run endbehavior = 1, which counts maxima 'within a halfwidth of the start or end' of the sequence.	
 	"
 
